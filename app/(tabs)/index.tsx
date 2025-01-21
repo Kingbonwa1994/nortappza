@@ -1,74 +1,143 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { View, StyleSheet, ImageBackground, Platform, Image, TouchableOpacity } from 'react-native';
+import { Button, Text, Avatar, Surface } from 'react-native-paper';
+import { Link } from 'expo-router';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
+    <View style={styles.mainContainer}>
+      {/* Header */}
+      <Surface style={styles.header}>
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+          source={require('../../assets/images/logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <Link href="/profile/index" asChild>
+          <TouchableOpacity>
+            <Avatar.Icon 
+              size={40} 
+              icon="account"
+              style={styles.profileIcon}
+            />
+          </TouchableOpacity>
+        </Link>
+      </Surface>
+
+      {/* Main Content */}
+      <ImageBackground
+        source={require('../../assets/images/music-bg.png')}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay}>
+          <View style={styles.content}>
+            <Text style={styles.title}>NORT</Text>
+            <Text style={styles.subtitle}>Not On Radio Tunes</Text>
+            
+            <View style={styles.buttonContainer}>
+              <Link href="/(tabs)/(auth)/signup" asChild>
+                <Button 
+                  mode="contained" 
+                  style={styles.button}
+                  contentStyle={styles.buttonContent}
+                  labelStyle={styles.buttonLabel}
+                >
+                  Get Started
+                </Button>
+              </Link>
+
+              <Link href="/(tabs)/(auth)/login" asChild>
+                <Button 
+                  mode="outlined" 
+                  style={[styles.button, styles.loginButton]}
+                  contentStyle={styles.buttonContent}
+                  labelStyle={styles.loginButtonLabel}
+                >
+                  Login
+                </Button>
+              </Link>
+            </View>
+          </View>
+        </View>
+      </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  mainContainer: {
+    flex: 1,
   },
-  stepContainer: {
-    gap: 8,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: Platform.OS === 'ios' ? 48 : 16,
+    backgroundColor: '#fff',
+    elevation: 4,
+  },
+  logo: {
+    width: 100,
+    height: 40,
+  },
+  profileIcon: {
+    backgroundColor: '#007AFF',
+  },
+  background: {
+    flex: 1,
+    width: '100%',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#ffffff',
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  subtitle: {
+    fontSize: 18,
+    color: '#ffffff',
+    marginBottom: 48,
+  },
+  buttonContainer: {
+    width: '100%',
+    maxWidth: 300,
+  },
+  button: {
+    width: '100%',
+    borderRadius: 25,
+    marginBottom: 16,
+    ...Platform.select({
+      ios: {
+        boxShadow: '0px 2px 3.84px rgba(0, 0, 0, 0.25)',
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  buttonContent: {
+    height: 56,
+  },
+  buttonLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  loginButton: {
+    borderColor: '#ffffff',
+  },
+  loginButtonLabel: {
+    color: '#ffffff',
   },
 });
