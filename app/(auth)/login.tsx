@@ -60,7 +60,7 @@ export default function LoginScreen() {
 
         <View style={styles.signupContainer}>
           <Text style={styles.signupText}>Don't have an account? </Text>
-          <Link href="/(tabs)/(auth)/signup" asChild>
+          <Link href="../(auth)/signup" asChild>
             <TouchableOpacity>
               <Text style={styles.signupLink}>Sign Up</Text>
             </TouchableOpacity>

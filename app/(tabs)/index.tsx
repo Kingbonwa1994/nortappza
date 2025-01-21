@@ -1,19 +1,19 @@
 import { View, StyleSheet, ImageBackground, Platform, Image, TouchableOpacity } from 'react-native';
 import { Button, Text, Avatar, Surface } from 'react-native-paper';
 import { Link } from 'expo-router';
-import { FontAwesome5 } from '@expo/vector-icons';
+
 
 export default function HomeScreen() {
   return (
     <View style={styles.mainContainer}>
       {/* Header */}
       <Surface style={styles.header}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Link href="/profile/index" asChild>
+
+        {/* add image that I removed because of lack of assets */}
+
+
+
+        <Link href="./profile/index" asChild>
           <TouchableOpacity>
             <Avatar.Icon 
               size={40} 
@@ -36,7 +36,7 @@ export default function HomeScreen() {
             <Text style={styles.subtitle}>Not On Radio Tunes</Text>
             
             <View style={styles.buttonContainer}>
-              <Link href="/(tabs)/(auth)/signup" asChild>
+              <Link href="../(auth)/signup" asChild>
                 <Button 
                   mode="contained" 
                   style={styles.button}
@@ -47,7 +47,7 @@ export default function HomeScreen() {
                 </Button>
               </Link>
 
-              <Link href="/(tabs)/(auth)/login" asChild>
+              <Link href="../(auth)/login" asChild>
                 <Button 
                   mode="outlined" 
                   style={[styles.button, styles.loginButton]}
