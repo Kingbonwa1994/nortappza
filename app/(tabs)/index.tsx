@@ -43,7 +43,8 @@ export default function App() {
   }
 
   return (
-    <LinearGradient colors={['#d946ef', '#9333ea', '#ec4899']} style={styles.container}>
+    <LinearGradient colors={['#581c87', '#9d174d', '#c2410c']}
+    style={styles.container}>
       <StatusBar style="light" />
       <Text style={styles.header}>Welcome to the App</Text>
 
