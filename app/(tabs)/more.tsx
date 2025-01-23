@@ -2,6 +2,9 @@ import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { StyleSheet, View, TouchableOpacity, Text, FlatList, Dimensions, Image } from 'react-native';
 import { FontAwesome, Feather } from '@expo/vector-icons'; // Using FontAwesome and Feather for icons
+import { LinearGradient } from 'expo-linear-gradient';
+
+
 
 const videoSource = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
@@ -41,15 +44,24 @@ function VideoItem({ item } : { item: string }) {
 
   return (
     <View style={styles.videoContainer}>
+       <LinearGradient
+           colors={['#6B21A8', '#C026D3', '#FB923C']}
+           start={{ x: 0, y: 0 }}
+           end={{ x: 1, y: 0 }}
+        >
+        <View style={styles.musicIconsContainer}>
+       
       <VideoView style={styles.fullscreenVideo} player={player} allowsFullscreen allowsPictureInPicture />
 
       {/* Music platform icons */}
-      <View style={styles.musicIconsContainer}>
+    
         <TouchableOpacity style={styles.iconButton}><FontAwesome name="spotify" size={24} color="white" /></TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}><FontAwesome name="apple" size={24} color="white" /></TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}><Feather name="cloud" size={24} color="white" /></TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}><Feather name="youtube" size={24} color="white" /></TouchableOpacity>
-      </View>
+     
+       
+        </View>
 
       {/* User info and follow button */}
       <View style={styles.userInfoContainer}>
@@ -83,6 +95,7 @@ function VideoItem({ item } : { item: string }) {
       <TouchableOpacity style={styles.playPauseButton} onPress={togglePlayPause}>
         <Text style={styles.playPauseText}>{isPlaying ? 'Pause' : 'Play'}</Text>
       </TouchableOpacity>
+      </LinearGradient>
     </View>
   );
 }
