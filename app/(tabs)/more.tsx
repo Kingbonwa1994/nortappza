@@ -93,7 +93,7 @@ function VideoItem({ item } : { item: string }) {
 
       {/* Play/Pause Button */}
       <TouchableOpacity style={styles.playPauseButton} onPress={togglePlayPause}>
-        <Text style={styles.playPauseText}>{isPlaying ? 'Pause' : 'Play'}</Text>
+        <Text style={styles.playPauseText}></Text>
       </TouchableOpacity>
       </LinearGradient>
     </View>
