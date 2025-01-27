@@ -2,7 +2,7 @@ import { ID, Account, Client } from 'react-native-appwrite'
 
 const appwriteClient = new Client()
 
-const APPWRITE_ENDPOINT: string = process.env.ENDPOINT || '';
+
 const APPWRITE_PROJECT_ID:string = process.env.PROJECT_ID || '';
 
 type CreateUserAccount = {
@@ -21,7 +21,7 @@ class AppwriteService {
 
   constructor(){
     appwriteClient
-      .setEndpoint(APPWRITE_ENDPOINT)
+      .setEndpoint('https://cloud.appwrite.io/v1')
       .setProject(APPWRITE_PROJECT_ID)
 
     this.account = new Account(appwriteClient)
