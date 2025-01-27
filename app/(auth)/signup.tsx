@@ -1,48 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ID, Models } from 'react-native-appwrite';
-import { account } from '@/lib/appwrite';  
+import { Models } from 'react-native-appwrite';
+import { AppwriteContext } from '@/providers/AuthContext';
 
 const SignUp = () => {
+  const { appwrite, setIsLoggedIn } = useContext(AppwriteContext);
+  const [error, setError] = useState<string>('');
   const [loggedInUser, setLoggedInUser] = useState<Models.User<Models.Preferences> | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const router = useRouter();
 
-  // Helper function to show error alerts
-  const showError = (message: string) => {
-    Alert.alert('Error', message, [{ text: 'OK' }]);
-  };
-
-  // Login function
-  async function login(email: string, password: string) {
-    try {
-      await account.createEmailPasswordSession(email, password);
-      const user = await account.get();
-      setLoggedInUser(user);
-    } catch (error: any) {
-      showError(error.message || 'Failed to log in.');
-    }
-  }
-
-  // Registration function
-  async function register(email: string, password: string, name: string) {
-    if (!name.trim() || !email.trim() || !password.trim()) {
-      showError('All fields are required.');
+  const handleSignup = async () => {
+    if (!name || !email || !password) {
+      setError('All fields are required');
+      Alert.alert('Error', 'All fields are required');
       return;
     }
 
     try {
-      await account.create(ID.unique(), email, password, name);
-      await login(email, password);
-      router.replace('/(tabs)'); // Redirect after successful registration
-    } catch (error: any) {
-      showError(error.message || 'Failed to register.');
+      const session = await appwrite.createAccount({ email, password, name });
+      if (session) {
+        const user = await appwrite.getCurrentUser();
+        setIsLoggedIn(true);
+        setLoggedInUser(user ?? null);
+        Alert.alert('Success', 'Signup successful!');
+        router.replace('/(tabs)');
+      }
+    } catch (e: any) {
+      console.error('Signup Error:', e);
+      setError(e.message || 'Signup failed');
+      Alert.alert('Error', e.message || 'Signup failed');
     }
-  }
+  };
 
   return (
     <LinearGradient colors={['#581c87', '#9d174d', '#c2410c']} style={styles.container}>
@@ -70,14 +63,10 @@ const SignUp = () => {
           value={password}
           onChangeText={setPassword}
         />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={async () => {
-            await register(email, password, name);
-          }}
-        >
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
         {loggedInUser && (
           <View style={styles.userInfo}>
             <Text style={styles.userInfoText}>Welcome, {loggedInUser.name}!</Text>
@@ -123,6 +112,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 10,
   },
   userInfo: {
     marginTop: 20,
