@@ -18,7 +18,14 @@ const AuthLayout = () => {
     })();
   });
 
-  return <Stack />;
+  return <Stack>
+    <Stack.Screen name="index" options={{ headerShown: false }} />
+    <Stack.Screen name="signup" options={{ headerShown: false, 
+      headerBackTitle: 'Back', 
+      headerBackVisible: true, 
+      headerBackButtonDisplayMode: 'default' }} />
+    <Stack.Screen name="login" options={{ headerShown: false, headerBackVisible: true }} />
+  </Stack>;
 };
 
 export default AuthLayout;

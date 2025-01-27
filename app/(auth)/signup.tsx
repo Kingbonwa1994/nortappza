@@ -1,12 +1,15 @@
 import React from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const SignUp = ({ email, setEmail, password, setPassword, name, setName, register }: any) => {
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={['#581c87', '#9d174d', '#c2410c']}
+    style={styles.container}>
+    <View>
       <TextInput
         style={styles.input}
         placeholder="Name"
@@ -33,12 +36,13 @@ const SignUp = ({ email, setEmail, password, setPassword, name, setName, registe
         style={styles.button}
         onPress={async () => {
           await register(email, password, name);
-          router.replace('(tabs)/index'); // Redirect after successful registration
+          router.replace('/(tabs)'); // Redirect after successful registration
         }}
       >
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
     </View>
+    </LinearGradient>
   );
 };
 
@@ -54,7 +58,8 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 10,
     marginBottom: 10,
-    backgroundColor: 'white',
+    backgroundColor: 'black',
+    borderColor: 'blue',
     borderRadius: 8,
   },
   button: {
