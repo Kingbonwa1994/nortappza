@@ -1,25 +1,31 @@
 import React, { useEffect } from 'react';
-import { useRouter, Slot, Stack } from 'expo-router';
-import { Account } from 'react-native-appwrite';
+import { useRouter, Stack } from 'expo-router';
 
 
-let account = new Account();
+//let account = true
 
 const AuthLayout = () => {
   const router = useRouter();
 
   useEffect(() => {
-    (async () => {
+    ( () => {
       try {
-        await account.get(); // Check if user is logged in
-        router.replace('(tabs)/index'); // Redirect to tabs if logged in
+        //account// Check if user is logged in
+        router.replace('/(tabs)'); // Redirect to tabs if logged in
       } catch {
         // Do nothing, allow auth screens to show
       }
     })();
-  }, []);
+  });
 
-  return <Stack />;
+  return <Stack>
+    <Stack.Screen name="index" options={{ headerShown: false }} />
+    <Stack.Screen name="signup" options={{ headerShown: false, 
+      headerBackTitle: 'Back', 
+      headerBackVisible: true, 
+      headerBackButtonDisplayMode: 'default' }} />
+    <Stack.Screen name="login" options={{ headerShown: false, headerBackVisible: true }} />
+  </Stack>;
 };
 
 export default AuthLayout;
