@@ -1,8 +1,14 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 export default function HomeScreen() {
   return (
+    <LinearGradient
+    colors={['#9f1239', '#6b21a8', '#c2410c']} // pink-800, purple-800, orange-700
+    style={styles.container}
+  >
     <View style={styles.container}>
       <Text style={styles.title}>Pyscho-Point</Text>
       <Link href="/(auth)/login" asChild>
@@ -16,6 +22,7 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </Link>
     </View>
+    </LinearGradient>
   );
 }
 
@@ -24,7 +31,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
   },
   title: {
     fontSize: 24,

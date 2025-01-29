@@ -10,11 +10,12 @@ const AuthLayout = () => {
   useEffect(() => {
     ( () => {
       try {
-        //account// Check if user is logged in
-        router.replace('/(tabs)'); // Redirect to tabs if logged in
+        const account = localStorage.getItem('account');
+        if (account) return
+        
+        router.replace('/(tabs)'); 
       } catch {
-        // Do nothing, allow auth screens to show
-
+        router.replace('/login'); 
       }
     })();
   });
