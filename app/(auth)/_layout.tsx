@@ -14,17 +14,28 @@ const AuthLayout = () => {
         router.replace('/(tabs)'); // Redirect to tabs if logged in
       } catch {
         // Do nothing, allow auth screens to show
+
       }
     })();
   });
 
   return <Stack>
-    <Stack.Screen name="index" options={{ headerShown: false }} />
-    <Stack.Screen name="signup" options={{ headerShown: false, 
+    <Stack.Screen name="index" 
+    options={{  headerShown: false,
+      headerBackTitle: 'Back', 
+      headerBackVisible: true, 
+      headerBackButtonDisplayMode: 'default'
+     }} />
+    <Stack.Screen name="signup" 
+    options={{ headerShown: false, 
       headerBackTitle: 'Back', 
       headerBackVisible: true, 
       headerBackButtonDisplayMode: 'default' }} />
-    <Stack.Screen name="login" options={{ headerShown: false, headerBackVisible: true }} />
+    <Stack.Screen name="login" 
+    options={{ headerShown: false, 
+    headerBackVisible: true,
+    headerBackButtonDisplayMode: 'default'
+    }} />
   </Stack>;
 };
 
