@@ -1,10 +1,9 @@
 import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import { StyleSheet, View, TouchableOpacity, Text, FlatList, Dimensions, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, FlatList, Dimensions, Image, SafeAreaView } from 'react-native';
 import { FontAwesome, Feather } from '@expo/vector-icons'; // Using FontAwesome and Feather for icons
 import { LinearGradient } from 'expo-linear-gradient';
-
-
+import { Link, useRouter } from 'expo-router'; // Import Expo Router components
 
 const videoSource = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
@@ -12,17 +11,39 @@ const VIDEOS = Array(20).fill(videoSource); // Example array with 20 entries of 
 
 export default function VideoScreen() {
   return (
-    <FlatList 
-      data={VIDEOS}
-      renderItem={({ item, index }) => <VideoItem item={item} />}
-      keyExtractor={(item, index) => index.toString()}
-      onEndReached={() => {
-        // Here you can fetch more videos if needed
-        console.log("Load more videos");
-      }}
-      onEndReachedThreshold={0.5}
-      style={styles.list}
-    />
+    <SafeAreaView style={styles.container}>
+      <Header />
+      <FlatList 
+        data={VIDEOS}
+        renderItem={({ item, index }) => <VideoItem item={item} />}
+        keyExtractor={(item, index) => index.toString()}
+        onEndReached={() => {
+          // Here you can fetch more videos if needed
+          console.log("Load more videos");
+        }}
+        onEndReachedThreshold={0.5}
+        style={styles.list}
+      />
+    </SafeAreaView>
+  );
+}
+
+function Header() {
+  const router = useRouter(); // Use Expo Router's useRouter hook
+
+  return (
+    <View style={styles.header}>
+      <Text style={styles.headerTitle}>artistReels</Text>
+      <TouchableOpacity style={styles.iconButton}>
+        <Feather name="search" size={24} color="white" />
+      </TouchableOpacity>
+      {/* Use Link for navigation to the profile screen */}
+      <Link href="/" asChild>
+        <TouchableOpacity>
+          <Image source={{ uri: 'https://via.placeholder.com/40' }} style={styles.profilePic} />
+        </TouchableOpacity>
+      </Link>
+    </View>
   );
 }
 
@@ -44,63 +65,82 @@ function VideoItem({ item } : { item: string }) {
 
   return (
     <View style={styles.videoContainer}>
-       <LinearGradient
-           colors={['#6B21A8', '#C026D3', '#FB923C']}
-           start={{ x: 0, y: 0 }}
-           end={{ x: 1, y: 0 }}
-        >
+      <LinearGradient
+        colors={['#6B21A8', '#C026D3', '#FB923C']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+      >
+        <View style={styles.videoWrapper}>
+          <VideoView style={styles.fullscreenVideo} player={player} allowsFullscreen allowsPictureInPicture />
+        </View>
+
+        {/* Music platform icons */}
         <View style={styles.musicIconsContainer}>
-       
-      <VideoView style={styles.fullscreenVideo} player={player} allowsFullscreen allowsPictureInPicture />
-
-      {/* Music platform icons */}
-    
-        <TouchableOpacity style={styles.iconButton}><FontAwesome name="spotify" size={24} color="white" /></TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}><FontAwesome name="apple" size={24} color="white" /></TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}><Feather name="cloud" size={24} color="white" /></TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}><Feather name="youtube" size={24} color="white" /></TouchableOpacity>
-     
-       
+          <TouchableOpacity style={styles.iconButton}><FontAwesome name="spotify" size={24} color="white" /></TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}><FontAwesome name="apple" size={24} color="white" /></TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}><Feather name="cloud" size={24} color="white" /></TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}><Feather name="youtube" size={24} color="white" /></TouchableOpacity>
         </View>
 
-      {/* User info and follow button */}
-      <View style={styles.userInfoContainer}>
-        <Image source={{ uri: 'https://via.placeholder.com/40' }} style={styles.avatar} />
-        <Text style={styles.username}>@user</Text>
-        <TouchableOpacity style={styles.followButton}><Text style={styles.followText}>Follow</Text></TouchableOpacity>
-      </View>
-
-      {/* Description and sound info */}
-      <View style={styles.descriptionContainer}>
-        <Text style={styles.description}>This is a cool video #trending</Text>
-        <View style={styles.soundContainer}>
-          <Feather name="music" size={16} color="white" />
-          <Text style={styles.soundText}>Original Sound - User</Text>
+        {/* User info and follow button */}
+        <View style={styles.userInfoContainer}>
+          <Image source={{ uri: 'https://via.placeholder.com/40' }} style={styles.avatar} />
+          <Text style={styles.username}>@user</Text>
+          <TouchableOpacity style={styles.followButton}><Text style={styles.followText}>Follow</Text></TouchableOpacity>
         </View>
-      </View>
 
-      {/* Reactions and share buttons */}
-      <View style={styles.reactionsContainer}>
-        <TouchableOpacity style={styles.iconButton}><FontAwesome name="heart" size={24} color="white" /></TouchableOpacity>
-        <Text style={styles.reactionCount}>1234</Text>
+        {/* Description and sound info */}
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.description}>This is a cool video #trending</Text>
+          <View style={styles.soundContainer}>
+            <Feather name="music" size={16} color="white" />
+            <Text style={styles.soundText}>Original Sound - User</Text>
+          </View>
+        </View>
 
-        <TouchableOpacity style={styles.iconButton}><Feather name="message-circle" size={24} color="white" /></TouchableOpacity>
-        <Text style={styles.reactionCount}>567</Text>
+        {/* Reactions and share buttons */}
+        <View style={styles.reactionsContainer}>
+          <TouchableOpacity style={styles.iconButton}><FontAwesome name="heart" size={24} color="white" /></TouchableOpacity>
+          <Text style={styles.reactionCount}>1234</Text>
 
-        <TouchableOpacity style={styles.iconButton}><Feather name="share" size={24} color="white" /></TouchableOpacity>
-        <Text style={styles.reactionCount}>89</Text>
-      </View>
+          <TouchableOpacity style={styles.iconButton}><Feather name="message-circle" size={24} color="white" /></TouchableOpacity>
+          <Text style={styles.reactionCount}>567</Text>
 
-      {/* Play/Pause Button */}
-      <TouchableOpacity style={styles.playPauseButton} onPress={togglePlayPause}>
-        <Text style={styles.playPauseText}>{isPlaying ? 'Pause' : 'Play'}</Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}><Feather name="share" size={24} color="white" /></TouchableOpacity>
+          <Text style={styles.reactionCount}>89</Text>
+        </View>
+
+        {/* Play/Pause Button */}
+        <TouchableOpacity style={styles.playPauseButton} onPress={togglePlayPause}>
+          <Text style={styles.playPauseText}>{isPlaying ? 'Pause' : 'Play'}</Text>
+        </TouchableOpacity>
       </LinearGradient>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#000',
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  profilePic: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+  },
   list: {
     flex: 1,
   },
@@ -108,8 +148,14 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     width: Dimensions.get('window').width,
   },
+  videoWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   fullscreenVideo: {
-    ...StyleSheet.absoluteFillObject,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height * 0.8, // Adjust height as needed
   },
   musicIconsContainer: {
     position: 'absolute',
