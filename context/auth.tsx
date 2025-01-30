@@ -28,13 +28,10 @@ interface ProviderProps {
 }
 
 // Create the AuthContext
-const AuthContext = React.createContext<AuthContextValue | undefined>(
-  undefined
-);
+const AuthContext = React.createContext<AuthContextValue | undefined>(undefined);
 
 export function Provider(props: ProviderProps) {
-  const [user, setAuth] =
-    React.useState<Models.User<Models.Preferences> | null>(null);
+  const [user, setAuth] = React.useState<Models.User<Models.Preferences> | null>(null);
   const [authInitialized, setAuthInitialized] = React.useState<boolean>(false);
 
   // This hook will protect the route access based on user authentication.
@@ -72,12 +69,12 @@ export function Provider(props: ProviderProps) {
         !inAuthGroup
       ) {
         // Redirect to the sign-in page.
-        router.push("/(auth)/login");
+        router.push("/");
       } else if (user && inAuthGroup) {
         // Redirect away from the sign-in page.
         router.push("/");
       }
-    }, [user, segments, authInitialized, isNavigationReady]);
+    }, [user, segments, isNavigationReady, router]); // Added `router` as a dependency
   };
 
   useEffect(() => {
@@ -94,27 +91,24 @@ export function Provider(props: ProviderProps) {
       setAuthInitialized(true);
       console.log("initialize ", user);
     })();
-  }, []);
+  }, [user]);
 
   /**
-   *
-   * @returns
+   * Logs out the user by deleting the current session.
    */
   const logout = async (): Promise<SignOutResponse> => {
     try {
-      const response = await appwrite.account.deleteSession("current");
-      return { error: undefined, data: response };
+      await appwrite.account.deleteSession("current"); // Removed unused `response` variable
+      return { error: undefined, data: {} };
     } catch (error) {
       return { error, data: undefined };
     } finally {
       setAuth(null);
     }
   };
+
   /**
-   *
-   * @param email
-   * @param password
-   * @returns
+   * Logs in the user with email and password.
    */
   const login = async (
     email: string,
@@ -122,10 +116,7 @@ export function Provider(props: ProviderProps) {
   ): Promise<SignInResponse> => {
     try {
       console.log(email, password);
-      const response = await appwrite.account.createEmailPasswordSession(
-        email,
-        password
-      );
+      await appwrite.account.createEmailPasswordSession(email, password);
 
       const user = await appwrite.account.get();
       setAuth(user);
@@ -137,11 +128,7 @@ export function Provider(props: ProviderProps) {
   };
 
   /**
-   * 
-   * @param email 
-   * @param password 
-   * @param username 
-   * @returns 
+   * Creates a new user account with email, password, and username.
    */
   const createAcount = async (
     email: string,
@@ -151,7 +138,7 @@ export function Provider(props: ProviderProps) {
     try {
       console.log(email, password, username);
 
-      // create the user
+      // Create the user
       await appwrite.account.create(
         appwrite.ID.unique(),
         email,
@@ -159,10 +146,10 @@ export function Provider(props: ProviderProps) {
         username
       );
 
-      // create the session by logging in
+      // Create the session by logging in
       await appwrite.account.createEmailPasswordSession(email, password);
 
-      // get Account information for the user
+      // Get account information for the user
       const user = await appwrite.account.get();
       setAuth(user);
       return { data: user, error: undefined };

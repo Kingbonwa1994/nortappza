@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Image
+   Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Image,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
+import { LinearGradient } from 'expo-linear-gradient';
 
 // Sample radio stations
 const radioStations = [
@@ -78,7 +79,10 @@ const SubmitComponent = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['#9f1239', '#6b21a8', '#c2410c']} // pink-800, purple-800, orange-700
+      style={styles.container}
+    >
       <Text style={styles.title}>Submit Your Song</Text>
 
       <TextInput
@@ -99,11 +103,21 @@ const SubmitComponent = () => {
       />
 
       <TouchableOpacity style={styles.uploadButton} onPress={pickTrack}>
-        <Text style={styles.uploadButtonText}>Upload Track</Text>
+        <LinearGradient
+          colors={['#ff6f61', '#ff4d4d']} // Gradient for the button
+          style={styles.buttonGradient}
+        >
+          <Text style={styles.uploadButtonText}>Upload Track</Text>
+        </LinearGradient>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
-        <Text style={styles.uploadButtonText}>Upload Album Cover</Text>
+        <LinearGradient
+          colors={['#ff6f61', '#ff4d4d']} // Gradient for the button
+          style={styles.buttonGradient}
+        >
+          <Text style={styles.uploadButtonText}>Upload Album Cover</Text>
+        </LinearGradient>
       </TouchableOpacity>
 
       {albumCover && (
@@ -128,9 +142,14 @@ const SubmitComponent = () => {
       />
 
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>Submit Song</Text>
+        <LinearGradient
+          colors={['#ff6f61', '#ff4d4d']} // Gradient for the button
+          style={styles.buttonGradient}
+        >
+          <Text style={styles.submitButtonText}>Submit Song</Text>
+        </LinearGradient>
       </TouchableOpacity>
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -138,7 +157,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#000',
   },
   title: {
     fontSize: 24,
@@ -146,9 +164,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     marginBottom: 20,
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
   },
   input: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -164,16 +179,18 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   uploadButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
+    borderRadius: 25,
+    overflow: 'hidden', // Ensures the gradient stays within the button bounds
     marginBottom: 15,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  buttonGradient: {
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   uploadButtonText: {
     color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
   },
   imagePreview: {
@@ -190,9 +207,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
     marginBottom: 10,
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
   },
   radioItem: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -211,10 +225,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   submitButton: {
-    backgroundColor: '#2563eb',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
+    borderRadius: 25,
+    overflow: 'hidden', // Ensures the gradient stays within the button bounds
     marginTop: 20,
   },
   submitButtonText: {
