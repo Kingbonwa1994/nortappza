@@ -5,19 +5,36 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useAuth } from "@/context/auth";
 import { Stack, useRouter } from "expo-router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
+import { Picker } from "@react-native-picker/picker";
 
 export default function SignUp() {
-  const { signUp } = useAuth();
   const router = useRouter();
-
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const userNameRef = useRef("");
+  const [role, setRole] = useState("artist"); // Default role is "artist"
+
+
+  const signUp = async (email: string, password: string, username: string, role: string) => {
+    try {
+      const response = await fetch(`${process.env.API_URL}/api/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password, username, role }),
+      });
+  
+      const data = await response.json();
+      return { data };
+    } catch (error) {
+      return { error };
+    }
+  };
 
   return (
     <>
@@ -69,12 +86,29 @@ export default function SignUp() {
           />
         </View>
 
+        {/* Role Selection */}
+        <View style={styles.formContainer}>
+          <Text style={styles.label}>I am a:</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={role}
+              onValueChange={(itemValue) => setRole(itemValue)}
+              style={styles.picker}
+              dropdownIconColor="#fff"
+            >
+              <Picker.Item label="Artist" value="artist" />
+              <Picker.Item label="Stakeholder" value="stakeholder" />
+            </Picker>
+          </View>
+        </View>
+
         <TouchableOpacity
           onPress={async () => {
             const { data, error } = await signUp(
               emailRef.current,
               passwordRef.current,
-              userNameRef.current
+              userNameRef.current,
+              role // Pass the selected role to the signUp function
             );
             if (data) {
               router.replace("/");
@@ -145,6 +179,18 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     color: "#fff",
     fontSize: 16,
+  },
+  pickerContainer: {
+    width: "100%",
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "rgba(255, 255, 255, 0.3)",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    overflow: "hidden", // Ensures the Picker stays within bounds
+  },
+  picker: {
+    width: "100%",
+    color: "#fff",
   },
   button: {
     width: "80%",

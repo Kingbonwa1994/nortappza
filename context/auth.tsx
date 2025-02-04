@@ -1,9 +1,7 @@
 import { useRootNavigation, useRouter, useSegments } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
-import { appwrite } from "../lib/appwrite-service";
 import { Models } from "react-native-appwrite";
 
-// Define the AuthContextValue interface
 interface SignInResponse {
   data: Models.User<Models.Preferences> | undefined;
   error: Error | undefined;
@@ -16,30 +14,25 @@ interface SignOutResponse {
 
 interface AuthContextValue {
   signIn: (e: string, p: string) => Promise<SignInResponse>;
-  signUp: (e: string, p: string, n: string) => Promise<SignInResponse>;
+  signUp: (e: string, p: string, n: string, r: string) => Promise<SignInResponse>;
   signOut: () => Promise<SignOutResponse>;
   user: Models.User<Models.Preferences> | null;
   authInitialized: boolean;
 }
 
-// Define the Provider component
 interface ProviderProps {
   children: React.ReactNode;
 }
 
-// Create the AuthContext
 const AuthContext = React.createContext<AuthContextValue | undefined>(undefined);
 
 export function Provider(props: ProviderProps) {
-  const [user, setAuth] = React.useState<Models.User<Models.Preferences> | null>(null);
-  const [authInitialized, setAuthInitialized] = React.useState<boolean>(false);
+  const [user, setAuth] = useState<Models.User<Models.Preferences> | null>(null);
+  const [authInitialized, setAuthInitialized] = useState<boolean>(false);
 
-  // This hook will protect the route access based on user authentication.
   const useProtectedRoute = (user: Models.User<Models.Preferences> | null) => {
     const segments = useSegments();
     const router = useRouter();
-
-    // checking that navigation is all good;
     const [isNavigationReady, setNavigationReady] = useState(false);
     const rootNavigation = useRootNavigation();
 
@@ -47,115 +40,92 @@ export function Provider(props: ProviderProps) {
       const unsubscribe = rootNavigation?.addListener("state", (event) => {
         setNavigationReady(true);
       });
-      return function cleanup() {
-        if (unsubscribe) {
-          unsubscribe();
-        }
-      };
+      return () => unsubscribe && unsubscribe();
     }, [rootNavigation]);
 
-    React.useEffect(() => {
-      if (!isNavigationReady) {
-        return;
-      }
+    useEffect(() => {
+      if (!isNavigationReady) return;
 
       const inAuthGroup = segments[0] === "(auth)";
 
       if (!authInitialized) return;
 
-      if (
-        // If the user is not signed in and the initial segment is not anything in the auth group.
-        !user &&
-        !inAuthGroup
-      ) {
-        // Redirect to the sign-in page.
+      if (!user && !inAuthGroup) {
         router.push("/");
       } else if (user && inAuthGroup) {
-        // Redirect away from the sign-in page.
         router.push("/");
       }
-    }, [user, segments, isNavigationReady, router]); // Added `router` as a dependency
+    }, [user, segments, isNavigationReady, router]);
   };
 
   useEffect(() => {
     (async () => {
       try {
-        const user = await appwrite.account.get();
-        console.log(user);
-        setAuth(user);
+        const response = await fetch("/api/me"); // Fetch the current user
+        const { data } = await response.json();
+
+        if (data) {
+          setAuth(data); // Set the authenticated user
+        } else {
+          setAuth(null); // No authenticated user
+        }
       } catch (error) {
-        console.log("error", error);
-        setAuth(null);
+        setAuth(null); // Error fetching user
+        console.log(error + "me error");
+      } finally {
+        setAuthInitialized(true); // Mark initialization as complete
       }
-
-      setAuthInitialized(true);
-      console.log("initialize ", user);
     })();
-  }, [user]);
+  }, []);
 
-  /**
-   * Logs out the user by deleting the current session.
-   */
-  const logout = async (): Promise<SignOutResponse> => {
+  const login = async (email: string, password: string): Promise<SignInResponse> => {
     try {
-      await appwrite.account.deleteSession("current"); // Removed unused `response` variable
-      return { error: undefined, data: {} };
-    } catch (error) {
-      return { error, data: undefined };
-    } finally {
-      setAuth(null);
-    }
-  };
-
-  /**
-   * Logs in the user with email and password.
-   */
-  const login = async (
-    email: string,
-    password: string
-  ): Promise<SignInResponse> => {
-    try {
-      console.log(email, password);
-      await appwrite.account.createEmailPasswordSession(email, password);
-
-      const user = await appwrite.account.get();
-      setAuth(user);
-      return { data: user, error: undefined };
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const { data, error } = await response.json();
+      if (error) throw new Error(error);
+      setAuth(data);
+      return { data, error: undefined };
     } catch (error) {
       setAuth(null);
       return { error: error as Error, data: undefined };
     }
   };
 
-  /**
-   * Creates a new user account with email, password, and username.
-   */
-  const createAcount = async (
+  const signup = async (
     email: string,
     password: string,
-    username: string
+    username: string,
+    role: string
   ): Promise<SignInResponse> => {
     try {
-      console.log(email, password, username);
-
-      // Create the user
-      await appwrite.account.create(
-        appwrite.ID.unique(),
-        email,
-        password,
-        username
-      );
-
-      // Create the session by logging in
-      await appwrite.account.createEmailPasswordSession(email, password);
-
-      // Get account information for the user
-      const user = await appwrite.account.get();
-      setAuth(user);
-      return { data: user, error: undefined };
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, username, role }),
+      });
+      const { data, error } = await response.json();
+      if (error) throw new Error(error);
+      setAuth(data);
+      return { data, error: undefined };
     } catch (error) {
       setAuth(null);
       return { error: error as Error, data: undefined };
+    }
+  };
+
+  const logout = async (): Promise<SignOutResponse> => {
+    try {
+      const response = await fetch("/api/logout", { method: "POST" });
+      const { data, error } = await response.json();
+      if (error) throw new Error(error);
+      setAuth(null);
+      return { data, error: undefined };
+    } catch (error) {
+      return { error, data: undefined };
     }
   };
 
@@ -166,7 +136,7 @@ export function Provider(props: ProviderProps) {
       value={{
         signIn: login,
         signOut: logout,
-        signUp: createAcount,
+        signUp: signup,
         user,
         authInitialized,
       }}
@@ -176,13 +146,10 @@ export function Provider(props: ProviderProps) {
   );
 }
 
-// Define the useAuth hook
 export const useAuth = () => {
   const authContext = useContext(AuthContext);
-
   if (!authContext) {
     throw new Error("useAuth must be used within an AuthContextProvider");
   }
-
   return authContext;
 };
