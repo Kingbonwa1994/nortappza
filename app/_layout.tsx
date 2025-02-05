@@ -8,10 +8,10 @@ import { useFonts } from "expo-font";
 import { Slot, SplashScreen } from "expo-router";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
-import { Provider, useAuth } from "../context/auth";
+import GlobalProvider from "@/context/GlobalProvider";
+
 
 export {
-  // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from "expo-router";
 
@@ -45,17 +45,14 @@ export default function RootLayout() {
   }
 
   return (
-    <Provider>
+    <GlobalProvider>
       <RootLayoutNav />
-    </Provider>
+    </GlobalProvider>
   );
 }
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const { authInitialized, user } = useAuth();
-
-  if (!authInitialized && !user) return null;
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Slot />

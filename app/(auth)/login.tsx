@@ -1,25 +1,27 @@
 import {
   Text,
-  TextInput,
   View,
   StyleSheet,
-  TouchableOpacity,
 } from "react-native";
-import { useAuth } from "@/context/auth";
 import { Stack, useRouter } from "expo-router";
-import { useRef } from "react";
-import React from "react";
+import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
+import  getCurrentUser from "@/lib/appwrite";
+import signIn from "@/lib/appwrite";
+import { useGlobalContext } from "../../context/GlobalProvider";
+import { Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import FormField from "@/components/FormField";
+import CustomButton from "@/components/FormField";
 
 export default function SignIn() {
-  const { signIn } = useAuth();
+  
   const router = useRouter();
 
-  const emailRef = useRef("");
-  const passwordRef = useRef("");
+
 
   return (
-    <>
+    <SafeAreaView>
       <Stack.Screen options={{ title: "sign up", headerShown: false }} />
       <LinearGradient
         colors={["#9f1239", "#6b21a8", "#c2410c"]} // pink-800, purple-800, orange-700
@@ -27,56 +29,20 @@ export default function SignIn() {
       >
         <Text style={styles.appName}>NORT</Text>
         <Text style={styles.appTagline}>Not On Radio Tunes</Text>
-
         <View style={styles.formContainer}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            placeholder="email"
-            placeholderTextColor="#999"
-            autoCapitalize="none"
-            nativeID="email"
-            onChangeText={(text) => {
-              emailRef.current = text;
-            }}
-            style={styles.textInput}
-          />
+          
         </View>
         <View style={styles.formContainer}>
           <Text style={styles.label}>Password</Text>
-          <TextInput
-            placeholder="password"
-            placeholderTextColor="#999"
-            secureTextEntry={true}
-            nativeID="password"
-            onChangeText={(text) => {
-              passwordRef.current = text;
-            }}
-            style={styles.textInput}
-          />
+          
         </View>
-
-        <TouchableOpacity
-          onPress={async () => {
-            const { data, error } = await signIn(
-              emailRef.current,
-              passwordRef.current
-            );
-            if (data) {
-              router.replace("/");
-            } else {
-              console.log(error);
-              // Alert.alert("Login Error", resp.error?.message);
-            }
-          }}
-          style={styles.button}
-        >
           <LinearGradient
             colors={["#ff6f61", "#ff4d4d"]} // Gradient for the button
             style={styles.buttonGradient}
           >
-            <Text style={styles.buttonText}>Login</Text>
+        
+            
           </LinearGradient>
-        </TouchableOpacity>
 
         <View style={styles.signupLinkContainer}>
           <Text
@@ -87,7 +53,7 @@ export default function SignIn() {
           </Text>
         </View>
       </LinearGradient>
-    </>
+    </SafeAreaView>
   );
 }
 
