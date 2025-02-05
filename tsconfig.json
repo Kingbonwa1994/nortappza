@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-  ]
+, "app/(auth)/sign-up.jsx", "app/(auth)/sign-in.jsx", "lib/appwrite.js", "lib/useAppwrite.js", "context/GlobalProvider.js"  ]
 }

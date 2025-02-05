@@ -8,12 +8,9 @@ import { useFonts } from "expo-font";
 import { Slot, SplashScreen } from "expo-router";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
-import GlobalProvider from "@/context/GlobalProvider";
+import GlobalProvider from "../context/GlobalProvider";
 
-
-export {
-  ErrorBoundary,
-} from "expo-router";
+export { ErrorBoundary } from "expo-router";
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -29,11 +26,12 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
+  // Handle font loading errors
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
+  // Hide splash screen once fonts are loaded
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -45,6 +43,7 @@ export default function RootLayout() {
   }
 
   return (
+    // ✅ Wrap the entire app in AppwriteProvider
     <GlobalProvider>
       <RootLayoutNav />
     </GlobalProvider>
