@@ -34,7 +34,7 @@ export default function HomeScreen() {
           </Text>
         </View>
 
-        <Link href="/(auth)/login" asChild>
+        <Link href="/(auth)/sign-in" asChild>
           <TouchableOpacity style={styles.subscribeButton}>
             <Text style={styles.subscribeButtonText}>Subscribe Now</Text>
           </TouchableOpacity>
@@ -42,7 +42,7 @@ export default function HomeScreen() {
 
         <Text style={styles.loginPrompt}>
           Already have an account?{' '}
-          <Link href="/(auth)/login" asChild>
+          <Link href="/(auth)/sign-in" asChild>
             <Text style={styles.loginLink}>Login</Text>
           </Link>
         </Text>

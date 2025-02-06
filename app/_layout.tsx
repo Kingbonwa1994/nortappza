@@ -10,6 +10,8 @@ import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import GlobalProvider from "../context/GlobalProvider";
 
+
+
 export { ErrorBoundary } from "expo-router";
 
 export const unstable_settings = {
@@ -21,6 +23,7 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const colorScheme = useColorScheme();
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
@@ -41,20 +44,14 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
-  return (
-    // ✅ Wrap the entire app in AppwriteProvider
-    <GlobalProvider>
-      <RootLayoutNav />
-    </GlobalProvider>
-  );
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+   
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Slot />
-    </ThemeProvider>
+    <GlobalProvider>
+    <Slot />
+    </GlobalProvider>
+   
+ </ThemeProvider>
   );
 }
+

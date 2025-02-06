@@ -63,7 +63,7 @@ export default function TabLayout() {
         options={{
           title: 'Tickets',
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="ticket-confirmation" size={24} color={color} />
+            <MaterialIcons name="video-library" size={24} color={color} />
 
           ),
         }}
@@ -73,7 +73,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="more"
         options={{
-          title: 'more',
+          title: 'More',
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="video-library" size={24} color={color} />
           ),
